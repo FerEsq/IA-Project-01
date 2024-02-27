@@ -106,15 +106,37 @@ def depthFirstSearch(problem):
 
     Your search algorithm needs to return a list of actions that reaches the
     goal. Make sure to implement a graph search algorithm.
-
-    To get started, you might want to try some of these simple commands to
-    understand the search problem that is being passed in:
-
-    print("Start:", problem.getStartState())
-    print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
     """
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+
+    stack = util.Stack()
+    stack.push((problem.getStartState(), []))
+    
+    #Inicializar el conjunto de estados visitados para llevar un registro de los estados ya explorados
+    visited = set()
+
+    while not stack.isEmpty():
+        #Sacar el último elemento añadido al stack
+        state, actions = stack.pop()
+
+        #Si el estado es el goal state, devolver el camino que llevó al pacman hasta aquí
+        if problem.isGoalState(state):
+            return actions
+
+        #Si el estado no ha sido visitado, marcarlo como visitado
+        if state not in visited:
+            visited.add(state)
+
+            #Obtener los sucesores del estado actual y añadirlos al stack
+            for nextState, action, _ in problem.expand(state):
+                #Añadir el sucesor al stack solo si no ha sido visitado
+                if nextState not in visited:
+                    #Añadir el nuevo estado y la lista de acciones actualizada al stack
+                    stack.push((nextState, actions + [action]))
+
+    #Si el stack se vacía sin encontrar el objetivo, devolver una lista vacía
+    return []
+
+    #util.raiseNotDefined()
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
