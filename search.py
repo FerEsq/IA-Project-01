@@ -11,6 +11,12 @@
 # Student side autograding was added by Brad Miller, Nick Hay, and
 # Pieter Abbeel (pabbeel@cs.berkeley.edu).
 
+'''
+ * Nombre: search.py
+ * Programadores: Fernanda Esquivel, Elías Alvarado, Adrian Fulladolsa
+ * Lenguaje: Python
+ * Historial: Modificado el 27.03.2024
+'''
 
 """
 In search.py, you will implement generic search algorithms which are called by
@@ -160,10 +166,10 @@ def breadthFirstSearch(problem):
         if state not in explored:
             explored.add(state)
 
-            # Para cada sucesor del nodo actual, si no ha sido explorado, lo añadimos a la frontera
+            #Para cada sucesor del nodo actual, si no ha sido explorado, lo añadimos a la frontera
             for nextState, action, _ in problem.expand(state):
                 if nextState not in explored:
-                    # Añadimos el sucesor a la frontera con el camino actualizado para llegar allí
+                    #Añadimos el sucesor a la frontera con el camino actualizado para llegar allí
                     frontier.push((nextState, actions + [action]))
 
     #Si la frontera está vacía y no hemos encontrado un estado objetivo, devolvemos una lista vacía
@@ -180,9 +186,40 @@ def nullHeuristic(state, problem=None):
 
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    from util import PriorityQueue
 
+    #PriorityQueue para almacenar los nodos junto con su coste total (coste hasta ahora + heurístico) y ordenarlos
+    openList = PriorityQueue()
+    
+    #El estado inicial se añade a la cola con un coste de 0 + heurístico
+    startNode = problem.getStartState()
+    openList.push((startNode, [], 0), 0 + heuristic(startNode, problem))
+    
+    #Visited se utiliza para almacenar los nodos ya evaluados
+    visited = set()
+    
+    while not openList.isEmpty():
+        #Extrae el nodo con el menor coste total (coste hasta ahora + heurístico)
+        currentNode, actions, currentCost = openList.pop()
+        
+        #Si el nodo actual es un goal state, devolver el camino que llevó al pacman hasta aquí
+        if problem.isGoalState(currentNode):
+            return actions
+        
+        #Si el nodo no ha sido visitado, se processa
+        if currentNode not in visited:
+            visited.add(currentNode)
+            
+            #Expanción del nodo actual
+            for nextState, action, stepCost in problem.expand(currentNode):
+                if nextState not in visited:
+                    #El nuevo coste es el coste actual más el coste de dar el siguiente paso
+                    newCost = currentCost + stepCost
+                    #Añade el sucesor a la cola con el nuevo coste y la heurística
+                    openList.push((nextState, actions + [action], newCost), newCost + heuristic(nextState, problem))
+    
+    #Si la cola se vacía sin encontrar una solución, eleva una excepción
+    util.raiseNotDefined()
 
 # Abbreviations
 bfs = breadthFirstSearch
