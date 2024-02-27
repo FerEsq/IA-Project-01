@@ -140,8 +140,36 @@ def depthFirstSearch(problem):
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+
+    #Queue para los nodos por explorar
+    frontier = util.Queue()
+    frontier.push((problem.getStartState(), [])) #Se inicia con el estado inicial y un camino vacío
+
+    #Conjunto almacenar los nodos ya visitados
+    explored = set()
+
+    while not frontier.isEmpty():
+        #Se saca el nodo actual y el camino para llegar allí de la queue
+        state, actions = frontier.pop()
+
+        #Si el nodo actual es un goal state, devolver el camino que llevó al pacman hasta aquí
+        if problem.isGoalState(state):
+            return actions
+
+        #Si el nodo actual no ha sido visitado, se marca como explorado
+        if state not in explored:
+            explored.add(state)
+
+            # Para cada sucesor del nodo actual, si no ha sido explorado, lo añadimos a la frontera
+            for nextState, action, _ in problem.expand(state):
+                if nextState not in explored:
+                    # Añadimos el sucesor a la frontera con el camino actualizado para llegar allí
+                    frontier.push((nextState, actions + [action]))
+
+    #Si la frontera está vacía y no hemos encontrado un estado objetivo, devolvemos una lista vacía
+    return []
+
+    #util.raiseNotDefined()
 
 def nullHeuristic(state, problem=None):
     """
