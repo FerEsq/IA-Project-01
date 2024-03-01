@@ -315,14 +315,19 @@ class CornersProblem(search.SearchProblem):
         space)
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        # Se retorna una tupla, la cuál como primer elemento contiene la posición inicial de Pacman
+        # el segundo elemento de la tupla es otra tupla la cual contiene 4 Falses, lo cual representan cada una de las
+        # esquinas en el siguiente orden: superior izquierda, superior derecha, inferior izquierda, inferior derecha
+        return (self.startingPosition, (False, False, False, False))
 
     def isGoalState(self, state):
         """
         Returns whether this search state is a goal state of the problem.
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        # Manejando la logica del estado creado a partir de la función getStartState, el estado meta se alcanzará
+        # siempre y cuando todos los elementos de la tupla conformada por booleanos sean True
+        return all(state[1])
 
     def expand(self, state):
         """
@@ -340,6 +345,20 @@ class CornersProblem(search.SearchProblem):
             # Add a child state to the child list if the action is legal
             # You should call getActions, getActionCost, and getNextState.
             "*** YOUR CODE HERE ***"
+            
+            x1, y1 = state[0] # Tomar valores de X y Y
+            dx, dy = Actions.directionToVector(action) # Próximo movimiento
+            # Asignacion de las nuevas coordenadas del pacman
+            x = int(x1 + dx)
+            y = int(y1 + dy)
+            newCornerBol = list(state[1])
+            if not self.walls[x][y]: # El pacman sí se movió
+                if (x,y) in self.corners: # Es una esquina, por lo que se debe actualizar la lista de esquinas visitadas
+                    newCornerBol[self.corners.index((x,y))] = True
+                newCornerBol = tuple(newCornerBol)
+                # Agregar el nuevo hijo
+                nextState = ((x,y), newCornerBol)
+                children.append((nextState, action, 1))
 
         self._expanded += 1 # DO NOT CHANGE
         return children
