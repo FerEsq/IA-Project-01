@@ -548,12 +548,9 @@ def foodHeuristic(state, problem):
     foodList = foodGrid.asList()
     maxDistance = 0
 
-    #Calcular la distancia desde la posición actual hasta cada pieza de comida
     for food in foodList:
         distance = util.manhattanDistance(position, food) 
         maxDistance = max(maxDistance, distance)
-
-    #Retornar la distancia máxima como la heurística
     return maxDistance
 
 
