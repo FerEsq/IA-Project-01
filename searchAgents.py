@@ -552,9 +552,20 @@ def foodHeuristic(state, problem):
     
     if len(foodList) == 0:
         return 0
-    for food in foodList:
-        # maxDistance.append(util.manhattanDistance(position,food))
-        maxDistance.append(mazeDistance(position, food, problem.startingGameState))
+
+    """ for food in foodList:
+        #maxDistance.append(mazeDistance(position, food, problem.startingGameState)) # tiempo: 37.2s. nodos: 4137
+        #maxDistance.append(util.manhattanDistance(position,food)) # tiempo: 2.2s. nodos: 9551
+        #maxDistance.append(mazeDistance(position, food, problem.startingGameState) + util.manhattanDistance(position,food)) # tiempo: 52.8s. nodos: 7270
+        maxDistance.append(mazeDistance(position, food, problem.startingGameState) - util.manhattanDistance(position,food)) # tiempo: 51.1s. nodos: 7151
+        print(position, food) """
+
+    for food in foodList: # tiempo: 1.7s. nodos: 4137
+        if (position, food) in problem.heuristicInfo:
+            maxDistance.append(problem.heuristicInfo[(position, food)])
+        else:
+            problem.heuristicInfo[(position, food)] = mazeDistance(position, food, problem.startingGameState)
+            maxDistance.append(problem.heuristicInfo[(position, food)])
 
     return max(maxDistance)
 
